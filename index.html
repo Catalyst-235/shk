@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Штрихкоды">
-<link rel="apple-touch-icon" href="icons/icon-192x192.png">
   <title>Генератор штрихкодов</title>
+  
+  <!-- PWA мета-теги -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Штрихкоды">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  
   <!-- JsBarcode -->
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -45,6 +48,8 @@
       margin-top: 10px;
       border: 1px solid #ddd;
       padding: 10px;
+      max-width: 100%;
+      height: auto;
     }
   </style>
 </head>
@@ -54,7 +59,7 @@
   <!-- Блок для ii -->
   <div class="row">
     <div class="prefix">ii</div>
-    <input type="text" id="ii-input" placeholder="Введите число">
+    <input type="number" pattern="[0-9]*" inputmode="numeric" id="ii-input" placeholder="Только цифры">
     <button onclick="generateBarcode('ii')">Сгенерировать</button>
   </div>
   <div id="ii-barcode"></div>
@@ -62,7 +67,7 @@
   <!-- Блок для fii -->
   <div class="row">
     <div class="prefix">fii</div>
-    <input type="text" id="fii-input" placeholder="Введите число">
+    <input type="number" pattern="[0-9]*" inputmode="numeric" id="fii-input" placeholder="Только цифры">
     <button onclick="generateBarcode('fii')">Сгенерировать</button>
   </div>
   <div id="fii-barcode"></div>
@@ -70,7 +75,7 @@
   <!-- Блок для edm_ -->
   <div class="row">
     <div class="prefix">edm_</div>
-    <input type="text" id="edm-input" placeholder="Введите число">
+    <input type="number" pattern="[0-9]*" inputmode="numeric" id="edm-input" placeholder="Только цифры">
     <button onclick="generateBarcode('edm_')">Сгенерировать</button>
   </div>
   <div id="edm-barcode"></div>
@@ -78,27 +83,19 @@
   <!-- Блок для RDC_ -->
   <div class="row">
     <div class="prefix">RDC_</div>
-    <input type="text" id="rdc-input" placeholder="Введите число">
+    <input type="number" pattern="[0-9]*" inputmode="numeric" id="rdc-input" placeholder="Только цифры">
     <button onclick="generateBarcode('RDC_')">Сгенерировать</button>
   </div>
   <div id="rdc-barcode"></div>
 
-  <!-- Пустой блок -->
+  <!-- Пустой блок (обычная клавиатура) -->
   <div class="row">
     <div class="prefix"></div>
-    <input type="text" id="empty-input" placeholder="Введите текст">
+    <input type="text" id="empty-input" placeholder="Любые символы">
     <button onclick="generateBarcode('')">Сгенерировать</button>
   </div>
   <div id="empty-barcode"></div>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => console.log('SW registered'))
-        .catch(err => console.log('SW registration failed'));
-    });
-  }
-</script>
+
   <script>
     function generateBarcode(prefix) {
       const inputId = `${prefix.toLowerCase().replace('_', '') || 'empty'}-input`;
@@ -121,6 +118,15 @@
         displayValue: true,
         fontSize: 16,
         margin: 10
+      });
+    }
+
+    // Регистрация Service Worker для PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => console.log('SW registered'))
+          .catch(err => console.log('SW registration failed'));
       });
     }
   </script>
