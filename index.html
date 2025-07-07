@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Штрихкоды">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <title>Генератор штрихкодов</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <!-- JsBarcode -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .row {
+      display: flex;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+    .prefix {
+      width: 50px;
+      font-weight: bold;
+    }
+    input {
+      padding: 8px;
+      width: 150px;
+      margin: 0 10px;
+    }
+    button {
+      padding: 8px 15px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    svg {
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Генератор штрихкодов</h1>
+
+  <!-- Блок для ii -->
+  <div class="row">
+    <div class="prefix">ii</div>
+    <input type="text" id="ii-input" placeholder="Введите число">
+    <button onclick="generateBarcode('ii')">Сгенерировать</button>
+  </div>
+  <div id="ii-barcode"></div>
+
+  <!-- Блок для fii -->
+  <div class="row">
+    <div class="prefix">fii</div>
+    <input type="text" id="fii-input" placeholder="Введите число">
+    <button onclick="generateBarcode('fii')">Сгенерировать</button>
+  </div>
+  <div id="fii-barcode"></div>
+
+  <!-- Блок для edm_ -->
+  <div class="row">
+    <div class="prefix">edm_</div>
+    <input type="text" id="edm-input" placeholder="Введите число">
+    <button onclick="generateBarcode('edm_')">Сгенерировать</button>
+  </div>
+  <div id="edm-barcode"></div>
+
+  <!-- Блок для RDC_ -->
+  <div class="row">
+    <div class="prefix">RDC_</div>
+    <input type="text" id="rdc-input" placeholder="Введите число">
+    <button onclick="generateBarcode('RDC_')">Сгенерировать</button>
+  </div>
+  <div id="rdc-barcode"></div>
+
+  <!-- Пустой блок -->
+  <div class="row">
+    <div class="prefix"></div>
+    <input type="text" id="empty-input" placeholder="Введите текст">
+    <button onclick="generateBarcode('')">Сгенерировать</button>
+  </div>
+  <div id="empty-barcode"></div>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => console.log('SW registered'))
+        .catch(err => console.log('SW registration failed'));
+    });
+  }
+</script>
+  <script>
+    function generateBarcode(prefix) {
+      const inputId = `${prefix.toLowerCase().replace('_', '') || 'empty'}-input`;
+      const number = document.getElementById(inputId).value.trim();
+      
+      if (!number) {
+        alert("Введите значение!");
+        return;
+      }
+
+      const barcodeText = `${prefix}${number}`;
+      const containerId = `${prefix.toLowerCase().replace('_', '') || 'empty'}-barcode`;
+      
+      // Очищаем предыдущий штрихкод
+      document.getElementById(containerId).innerHTML = `<svg id="${prefix || 'empty'}-barcode-svg"></svg>`;
+      
+      // Генерируем новый
+      JsBarcode(`#${prefix || 'empty'}-barcode-svg`, barcodeText, {
+        format: "CODE128",
+        displayValue: true,
+        fontSize: 16,
+        margin: 10
+      });
+    }
+  </script>
+</body>
+</html>
