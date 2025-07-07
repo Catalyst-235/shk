@@ -1,6 +1,6 @@
 {
   "name": "Генератор штрихкодов",
-  "short_name": "BarcodeGen",
+  "short_name": "Штрихкоды",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
